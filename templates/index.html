@@ -3,35 +3,40 @@
   <head>
     <title>Garage Door</title>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/door.png') }}">
     <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
     <script src="{{ url_for('static', filename = 'js/door.js') }}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <style>
-#toggleButton {
-  width: 100%;
-  background-image: url('{{ url_for('static', filename = 'img/door.png') }}');
-  background-repeat: no-repeat;
-  background-position: center center;
-  min-height: 175px;
-}
+      #toggleButton {
+        width: 100%;
+        background-image: url('{{ url_for('static', filename = 'img/door.png') }}');
+        background-repeat: no-repeat;
+        background-position: center center;
+        min-height: 200px;
+      }
+
+      #toggleButton.open {
+        background-image: url('{{ url_for('static', filename = 'img/door_open.png') }}');
+      }
+
+      .status {
+          font-size: 12pt;
+          text-align: center;
+          padding: 10px;
+          margin-top: 20px;
+      }
     </style>
   </head>
   <body>
     <div class="jumbotron">
       <div class="container">
-      <h1>Garage door is currently:</h1>
-      <h2 id="statusField">
-      {% if closed %}
-        Closed
-      {% else %}
-        Open
-      {% endif %}
-      </h2>
-      <div class="container">
       <form method="post" action="/door">
-        <input class="btn btn-primary btn-lg" id="toggleButton" type="submit" value="" />
+        <input class="btn {{ 'btn-danger' if open else 'btn-success' }} btn-lg {{ 'open' if open }}" id="toggleButton" type="submit" value="" />
       </form>
-      </div>
+      <p class="status text-info">
+        {{ 'OPENED' if open else 'CLOSED' }} for {{ elapsed }}
+      </p>
       </div>
     </div>
   </body>
