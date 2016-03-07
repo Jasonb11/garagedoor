@@ -6,19 +6,28 @@ from datetime import timedelta
 
 import time
 
+lastStatus = ('open', 0)
+
+def setOpen():
+    global lastStatus
+    if lastStatus[0] != 'open':
+        lastStatus = ('open', time.time())
+
+def setClosed():
+    global lastStatus
+    if lastStatus[0] != 'closed':
+        lastStatus = ('closed', time.time())
+
 relay = LED(17, initial_value = True)
 sensor = Button(27)
 app = Flask(__name__)
 lock = Lock()
-lastStatus = ('open' if not sensor.is_pressed else 'closed', time.time())
+
+sensor.when_pressed = setClosed
+sensor.when_released = setOpen
 
 def isOpen():
-    global lastStatus
     opened = not sensor.is_pressed
-    if opened and lastStatus[0] != 'open':
-        lastStatus = ('open', time.time())
-    elif not opened and lastStatus[0] != 'closed':
-        lastStatus = ('closed', time.time())
     return opened
 
 def elapsedTime():
@@ -43,4 +52,8 @@ def toggleRelay():
     return jsonify(status=relay.is_lit)
 
 if __name__ == '__main__':
+    if isOpen():
+        setOpen()
+    else:
+        setClosed()
     app.run(debug = True, host = '0.0.0.0', port = 80)
