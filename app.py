@@ -35,7 +35,6 @@ def elapsedTime():
 
 @app.route('/')
 def index():
-    global lastStatus
     return render_template('index.html', open=isOpen(), elapsed=elapsedTime())
 
 @app.route('/door', methods=['GET'])
